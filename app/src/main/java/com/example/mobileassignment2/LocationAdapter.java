@@ -47,7 +47,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     public static class LocationViewHolder extends RecyclerView.ViewHolder {
         TextView addressTextView;
 
-        public LocationViewHolder(@NonNull View itemView) {
+        public LocationViewHolder(View itemView) {
             super(itemView);
             addressTextView = itemView.findViewById(R.id.addressTextView);
         }

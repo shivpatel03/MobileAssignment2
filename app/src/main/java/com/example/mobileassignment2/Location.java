@@ -21,11 +21,9 @@ public class Location {
         return this.address;
     }
 
-    public double latitude() {
+    public double getLatitude() {
         return this.latitude;
     }
 
-    public double longitude() {
-        return this.longitude;
-    }
+    public double getLongitude() { return this.longitude; }
 }
