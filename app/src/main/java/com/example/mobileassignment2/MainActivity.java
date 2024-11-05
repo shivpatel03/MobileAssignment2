@@ -7,12 +7,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.HashMap;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private DatabaseHelper dbHelper;
+    private RecyclerView allAddresses;
+    private LocationAdapter adapter;
+    private List<Location> locationList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,5 +31,19 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        dbHelper = new DatabaseHelper(this);
+
+        allAddresses = findViewById(R.id.main);
+        allAddresses.setLayoutManager(new LinearLayoutManager(this));
+
+        locationList = dbHelper.getEntries();
+
+        adapter = new LocationAdapter(locationList, this);
+        allAddresses.setAdapter(adapter);
+
+//        HashMap<Integer, String> allAddresses = dbHelper.getAddresses();
+
+
     }
 }

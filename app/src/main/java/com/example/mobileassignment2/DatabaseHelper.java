@@ -10,7 +10,10 @@ import android.database.Cursor;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import kotlin.Suppress;
 //import java.util.concurrent.Callable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -85,5 +88,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         return db.delete(TABLE_NAME, "ID=?", new String[]{id});
+    }
+
+    @SuppressLint("Range")
+    public HashMap<Integer, String> getAddresses() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT ID, ADDRESS FROM " + TABLE_NAME + " ORDER BY ADDRESS", null);
+
+        HashMap<Integer, String> addresses = new HashMap<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex(COL_1));
+                String address = cursor.getString(cursor.getColumnIndex(COL_2));
+
+                addresses.put(id, address);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return addresses;
     }
 }
