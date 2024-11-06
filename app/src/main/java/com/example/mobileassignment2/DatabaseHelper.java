@@ -10,11 +10,7 @@ import android.database.Cursor;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import kotlin.Suppress;
-//import java.util.concurrent.Callable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -60,7 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 double latitude = cursor.getDouble(cursor.getColumnIndex(COL_3));
                 double longitude = cursor.getDouble(cursor.getColumnIndex(COL_4));
 
-                Location location = new Location(id, address, latitude, longitude);
+                Location location = new Location(id, address, longitude, latitude);
                 locations.add(location);
             } while (cursor.moveToNext());
         }
@@ -71,44 +67,55 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return locations;
     }
 
-    public boolean addEntry(String address, double longitude, double latitude) {
+    public void addEntry(String address, double longitude, double latitude) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put(COL_2, address);
-        values.put(COL_3, longitude);
-        values.put(COL_4, latitude);
+        values.put(COL_3, latitude);
+        values.put(COL_4, longitude);
 
-        long var = db.insert(TABLE_NAME, null, values);
+        db.insert(TABLE_NAME, null, values);
 
-        return var != -1;
     }
 
-    public Integer deleteEntry(String id) {
+    public void deleteEntry(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        return db.delete(TABLE_NAME, "ID=?", new String[]{id});
+        db.delete(TABLE_NAME, "ID = ?", new String[]{String.valueOf(id)});
     }
 
     @SuppressLint("Range")
-    public HashMap<Integer, String> getAddresses() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("SELECT ID, ADDRESS FROM " + TABLE_NAME + " ORDER BY ADDRESS", null);
+    public List<Location> search(String searchTerm){
+        List<Location> locationList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
 
-        HashMap<Integer, String> addresses = new HashMap<>();
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE LOWER(" + COL_2 + ") LIKE LOWER(?)";
+        Cursor cursor = db.rawQuery(query, new String[]{"%" + searchTerm + "%"});
 
-        if (cursor.moveToFirst()) {
+        if(cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndex(COL_1));
-                String address = cursor.getString(cursor.getColumnIndex(COL_2));
-
-                addresses.put(id, address);
+                String address = cursor.getString(cursor.getColumnIndexOrThrow(COL_2));
+                double longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(COL_3));
+                double latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(COL_4));
+                locationList.add(new Location(id, address, longitude, latitude));
             } while (cursor.moveToNext());
         }
-
         cursor.close();
-        db.close();
-
-        return addresses;
+        return locationList;
     }
+
+    public boolean updateEntry(int id, String address, double latitude, double longitude) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COL_2, address);
+        values.put(COL_3, latitude);
+        values.put(COL_4, longitude);
+
+        int rowsUpdated = db.update(TABLE_NAME, values, "ID = ?", new String[]{String.valueOf(id)});
+        return rowsUpdated > 0;
+    }
+
 }

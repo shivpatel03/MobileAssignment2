@@ -2,6 +2,9 @@ package com.example.mobileassignment2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +24,8 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
     private RecyclerView allAddresses;
     private LocationAdapter adapter;
     private List<Location> locationList;
+    private EditText searchInput;
+    private Button searchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +39,8 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
         });
 
         dbHelper = new DatabaseHelper(this);
-
-        dbHelper.addEntry("Scarborough", 43.7764, 79.2318);
+        searchInput = findViewById(R.id.searchInput);
+        searchButton = findViewById(R.id.searchButton);
 
         allAddresses = findViewById(R.id.allAddresses);
         allAddresses.setLayoutManager(new LinearLayoutManager(this));
@@ -46,14 +51,29 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
         allAddresses.setAdapter(adapter);
     }
 
-    // Implement the onLocationClick method
+    public void searchDatabase(View view) {
+        String searchTerm = searchInput.getText().toString().trim();
+        if (!searchTerm.isEmpty()) {
+            locationList = dbHelper.search(searchTerm);
+            adapter.updateData(locationList);
+        }
+    }
+
+    // onclick for showing location
     @Override
     public void onLocationClick(Location location) {
         // Open a new activity and pass the latitude and longitude
         Intent intent = new Intent(MainActivity.this, LocationDetailActivity.class);
+        intent.putExtra("addressId", location.getId());
         intent.putExtra("address", location.getAddress());
         intent.putExtra("latitude", location.getLatitude());
         intent.putExtra("longitude", location.getLongitude());
+        startActivity(intent);
+    }
+
+    // redirect to class to add a new address
+    public void addNewAddress(View view) {
+        Intent intent = new Intent(MainActivity.this, NewAddress.class);
         startActivity(intent);
     }
 }

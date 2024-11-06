@@ -1,5 +1,6 @@
 package com.example.mobileassignment2;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +28,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     @NonNull
     @Override
     public LocationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.location_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.location_item, parent, false);
         return new LocationViewHolder(view);
     }
 
@@ -52,4 +52,11 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             addressTextView = itemView.findViewById(R.id.addressTextView);
         }
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateData(List<Location> newLocationList) {
+        this.locationList = newLocationList;
+        notifyDataSetChanged(); // Refresh the RecyclerView with new data
+    }
+
 }

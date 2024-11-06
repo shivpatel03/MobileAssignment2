@@ -6,7 +6,7 @@ public class Location {
     private double latitude;
     private double longitude;
 
-    public Location(int id, String address, double latitude, double longitude){
+    public Location(int id, String address, double longitude, double latitude){
         this.id = id;
         this.address = address;
         this.latitude = latitude;
@@ -25,5 +25,7 @@ public class Location {
         return this.latitude;
     }
 
-    public double getLongitude() { return this.longitude; }
+    public double getLongitude() {
+        return this.longitude;
+    }
 }
