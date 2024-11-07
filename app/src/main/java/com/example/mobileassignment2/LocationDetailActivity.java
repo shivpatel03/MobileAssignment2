@@ -21,6 +21,7 @@ public class LocationDetailActivity extends AppCompatActivity {
     private Button editButton;
     private Button saveButton;
     private Button cancelButton;
+    private Button deleteButton;
     private DatabaseHelper dbHelper;
     private int id;
 
@@ -44,6 +45,7 @@ public class LocationDetailActivity extends AppCompatActivity {
         returnToMainButton = findViewById(R.id.returnToMainButton);
         editButton = findViewById(R.id.editButton);
         saveButton = findViewById(R.id.saveButton);
+        deleteButton = findViewById(R.id.deleteButton);
         cancelButton = findViewById(R.id.cancelButton);
 
         // data from intent
@@ -89,6 +91,7 @@ public class LocationDetailActivity extends AppCompatActivity {
 
             saveButton.setVisibility(View.VISIBLE);
             cancelButton.setVisibility(View.VISIBLE);
+            deleteButton.setVisibility(View.GONE);
             editButton.setVisibility(View.GONE); // Hide Edit button
         }
     }
@@ -107,6 +110,7 @@ public class LocationDetailActivity extends AppCompatActivity {
         latitudeEditText.setVisibility(View.GONE);
         longitudeEditText.setVisibility(View.GONE);
 
+        deleteButton.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.GONE);
         cancelButton.setVisibility(View.GONE);
         editButton.setVisibility(View.VISIBLE);
@@ -140,6 +144,8 @@ public class LocationDetailActivity extends AppCompatActivity {
             cancelButton.setVisibility(View.GONE);
             editButton.setVisibility(View.VISIBLE);
             returnToMainButton.setVisibility(View.VISIBLE);
+            deleteButton.setVisibility(View.VISIBLE);
+
         }
     }
 
