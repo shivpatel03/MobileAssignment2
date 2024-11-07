@@ -56,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements LocationAdapter.O
         if (!searchTerm.isEmpty()) {
             locationList = dbHelper.search(searchTerm);
             adapter.updateData(locationList);
+        } else {
+            locationList = dbHelper.getEntries();
+            adapter.updateData(locationList);
         }
     }
 

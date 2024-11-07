@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -42,60 +43,79 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 
         String[] addresses = {
-                "123 Queen St W", "456 King St W", "789 Dundas St E", "101 Bay St", "202 College St",
-                "303 Yonge St", "404 Front St W", "505 Spadina Ave", "606 Bathurst St", "707 St Clair Ave W",
-                "808 Bloor St W", "909 Finch Ave W", "123 King St E", "234 Queen St E", "345 College St",
-                "456 Church St", "567 Dundas St W", "678 Yonge St", "789 Bay St", "890 Gerrard St E",
-                "1010 College St W", "1111 Queen St E", "1212 Bloor St E", "1313 Dufferin St", "1414 Wilson Ave",
-                "1515 St Clair Ave E", "1616 Kingston Rd", "1717 Bathurst St", "1818 Lawrence Ave W", "1919 Sheppard Ave E",
-                "2020 Finch Ave E", "2121 Eglinton Ave W", "2222 Bayview Ave", "2323 Gerrard St W", "2424 Danforth Ave",
-                "2525 Yonge St", "2626 Keele St", "2727 Dupont St", "2828 Jane St", "2929 Midland Ave",
-                "3030 Woodbine Ave", "3131 Lawrence Ave E", "3232 Morningside Ave", "3333 Markham Rd", "3434 Finch Ave E",
-                "3535 Ellesmere Rd", "3636 Runnymede Rd", "3737 Dufferin St", "3838 Finch Ave W", "3939 Bathurst St",
-                "4040 Queen St E", "4141 St Clair Ave W", "4242 Lawrence Ave W", "4343 Victoria Park Ave", "4444 Avenue Rd",
-                "4545 Gerrard St E", "4646 Yonge St", "4747 College St", "4848 Kingston Rd", "4949 Bloor St W",
-                "5050 Bathurst St", "5151 Eglinton Ave W", "5252 Yonge St", "5353 Bayview Ave", "5454 Finch Ave W",
-                "5555 Jane St", "5656 Lawrence Ave W", "5757 Dupont St", "5858 St Clair Ave E", "5959 Keele St",
-                "6060 Eglinton Ave W", "6161 Queen St E", "6262 College St", "6363 Church St", "6464 Dufferin St",
-                "6565 Spadina Ave", "6666 Bloor St E", "6767 Victoria Park Ave", "6868 Yonge St", "6969 St Clair Ave W",
-                "7070 Dundas St W", "7171 Dupont St", "7272 Bathurst St", "7373 Markham Rd", "7474 Bayview Ave",
-                "7575 Eglinton Ave E", "7676 Keele St", "7777 College St", "7878 Gerrard St E", "7979 Queen St W",
-                "8080 Finch Ave E", "8181 Danforth Ave", "8282 Wilson Ave", "8383 Bathurst St", "8484 Lawrence Ave E",
-                "8585 Woodbine Ave", "8686 Dupont St", "8787 Dufferin St", "8888 Bloor St E", "8989 St Clair Ave W",
-                "9090 Jane St", "9191 Spadina Ave", "9292 Keele St", "9393 Bathurst St", "9494 College St W",
-                "9595 Yonge St", "9696 Church St", "9797 Finch Ave W", "9898 Lawrence Ave W", "9999 Gerrard St W",
-                "10000 Bayview Ave", "10101 Victoria Park Ave", "10202 Avenue Rd", "10303 Dundas St W", "10404 Bloor St W"
+                "123 Queen St W, Toronto", "456 King St W, Toronto", "789 Dundas St W, Toronto",
+                "101 Bay St, Toronto", "202 College St, Toronto", "303 Yonge St, Toronto",
+                "404 Front St W, Toronto", "505 Spadina Ave, Toronto", "606 Bathurst St, Toronto",
+                "707 St Clair Ave W, Toronto", "808 Bloor St W, Toronto", "909 Finch Ave W, Toronto",
+                "1010 University Ave, Toronto", "1111 Avenue Rd, Toronto", "1212 Eglinton Ave W, Toronto",
+                "1313 Dufferin St, Toronto", "1414 Wilson Ave, Toronto", "1515 St Clair Ave E, Toronto",
+                "1616 Kingston Rd, Toronto", "1717 Lawrence Ave E, Toronto", "1818 Victoria Park Ave, Toronto",
+                "1919 Sheppard Ave E, Toronto", "2020 Don Mills Rd, Toronto", "2121 Bayview Ave, Toronto",
+                "2222 Mount Pleasant Rd, Toronto", "2323 Yonge St, Toronto", "2424 Danforth Ave, Toronto",
+                "2525 Queen St E, Toronto", "2626 Lake Shore Blvd W, Toronto", "2727 Kipling Ave, Toronto",
+                "2828 Jane St, Toronto", "2929 Keele St, Toronto", "3030 Weston Rd, Toronto",
+                "3131 Steeles Ave W, Toronto", "3232 Finch Ave E, Toronto", "3333 Kennedy Rd, Toronto",
+                "3434 McCowan Rd, Toronto", "3535 Brimley Rd, Toronto", "3636 Midland Ave, Toronto",
+                "3737 Pharmacy Ave, Toronto", "3838 Ellesmere Rd, Toronto", "3939 Lawrence Ave E, Toronto",
+                "4040 Markham Rd, Toronto", "4141 Morningside Ave, Toronto", "4242 Port Union Rd, Toronto",
+                "4343 Kingston Rd, Toronto", "4444 Eglinton Ave E, Toronto", "4545 York Mills Rd, Toronto",
+                "4646 Sheppard Ave W, Toronto", "4747 Leslie St, Toronto", "4848 Bathurst St, Toronto",
+                "4949 Dufferin St, Toronto", "5050 Steeles Ave E, Toronto", "5151 Don Mills Rd, Toronto",
+                "5252 Victoria Park Ave, Toronto", "5353 Lawrence Ave W, Toronto", "5454 Rogers Rd, Toronto",
+                "5555 St Clair Ave W, Toronto", "5656 Davenport Rd, Toronto", "5757 Dupont St, Toronto",
+                "5858 Bloor St W, Toronto", "5959 The Queensway, Toronto", "6060 Evans Ave, Toronto",
+                "6161 Dixon Rd, Toronto", "6262 Rexdale Blvd, Toronto", "6363 Albion Rd, Toronto",
+                "6464 Islington Ave, Toronto", "6565 Martin Grove Rd, Toronto", "6666 Burnhamthorpe Rd, Toronto",
+                "6767 Mill Rd, Toronto", "6868 Royal York Rd, Toronto", "6969 Brown's Line, Toronto",
+                "7070 Coxwell Ave, Toronto", "7171 Woodbine Ave, Toronto", "7272 Birchmount Rd, Toronto",
+                "7373 Warden Ave, Toronto", "7474 Bellamy Rd, Toronto", "7575 Brimley Rd, Toronto",
+                "7676 Progress Ave, Toronto", "7777 Neilson Rd, Toronto", "7878 Sewells Rd, Toronto",
+                "7979 Old Kingston Rd, Toronto", "8080 Military Trail, Toronto", "8181 Conlins Rd, Toronto",
+                "8282 Meadowvale Rd, Toronto", "8383 Sheppard Ave E, Toronto", "8484 Bridletowne Circle, Toronto",
+                "8585 Huntingwood Dr, Toronto", "8686 Brian Dr, Toronto", "8787 Gordon Baker Rd, Toronto",
+                "8888 McNicoll Ave, Toronto", "8989 Steeles Ave E, Toronto", "9090 Finch Ave E, Toronto",
+                "9191 Sandhurst Circle, Toronto", "9292 Kennedy Rd, Toronto", "9393 Birchmount Rd, Toronto",
+                "9494 Warden Ave, Toronto", "9595 Pharmacy Ave, Toronto", "9696 Victoria Park Ave, Toronto",
+                "9797 Don Mills Rd, Toronto", "9898 Leslie St, Toronto", "9999 Bayview Ave, Toronto",
+                "10000 Yonge St, Toronto"
         };
 
         double[] latitudes = {
-                43.6547, 43.6451, 43.6568, 43.6459, 43.6629, 43.6536, 43.6419, 43.6492, 43.6622, 43.6867,
-                43.6645, 43.7384, 43.6534, 43.6548, 43.6528, 43.6599, 43.6539, 43.6595, 43.6500, 43.6699,
-                43.6570, 43.6655, 43.6715, 43.6543, 43.6631, 43.6689, 43.6772, 43.6829, 43.6891, 43.7058,
-                43.6931, 43.7046, 43.7081, 43.7228, 43.7362, 43.7444, 43.7457, 43.7511, 43.7591, 43.7615,
-                43.7653, 43.7778, 43.7860, 43.7929, 43.8034, 43.8159, 43.8282, 43.8383, 43.8421, 43.8519,
-                43.8622, 43.8729, 43.8787, 43.8860, 43.8934, 43.9011, 43.9056, 43.9113, 43.9185, 43.9243,
-                43.9312, 43.9370, 43.9445, 43.9500, 43.9567, 43.9631, 43.9705, 43.9780, 43.9837, 43.9910,
-                43.9981, 44.0039, 44.0106, 44.0170, 44.0223, 44.0284, 44.0339, 44.0411, 44.0480, 44.0562,
-                44.0623, 44.0694, 44.0753, 44.0819, 44.0880, 44.0931, 44.0993, 44.1065, 44.1136, 44.1208
+                43.6532, 43.6468, 43.6552, 43.6488, 43.6579, 43.6612, 43.6428, 43.6598, 43.6666,
+                43.6812, 43.6629, 43.7841, 43.6579, 43.6879, 43.6999, 43.6688, 43.7199, 43.6788,
+                43.6888, 43.7488, 43.7199, 43.7677, 43.7388, 43.7299, 43.7088, 43.7166, 43.6833,
+                43.6688, 43.6288, 43.7122, 43.6999, 43.7299, 43.7066, 43.7944, 43.7855, 43.7788,
+                43.7844, 43.7733, 43.7788, 43.7733, 43.7677, 43.7577, 43.7844, 43.7788, 43.7922,
+                43.7677, 43.7255, 43.7455, 43.7844, 43.7677, 43.7577, 43.7399, 43.7944, 43.7844,
+                43.7677, 43.7122, 43.6922, 43.6833, 43.6733, 43.6633, 43.6579, 43.6488, 43.6429,
+                43.6922, 43.6833, 43.6733, 43.6633, 43.7122, 43.7066, 43.7011, 43.6955, 43.6899,
+                43.6844, 43.6788, 43.6733, 43.7122, 43.7066, 43.7011, 43.6955, 43.6899, 43.7122,
+                43.7066, 43.7011, 43.6955, 43.7299, 43.7844, 43.7788, 43.7733, 43.7677, 43.7622,
+                43.7566, 43.7511, 43.7455, 43.7399, 43.7344, 43.7288, 43.7233, 43.7177, 43.7122,
+                43.7066, 43.7011, 43.6955, 43.6899, 43.6844, 43.6788, 43.6733, 43.6677, 43.6622
         };
 
         double[] longitudes = {
-                -79.3803, -79.3891, -79.3523, -79.3807, -79.3950, -79.3832, -79.3862, -79.4023, -79.4104, -79.4239,
-                -79.3970, -79.4180, -79.3821, -79.3884, -79.3930, -79.3812, -79.3785, -79.3947, -79.3837, -79.3916,
-                -79.3846, -79.3793, -79.3876, -79.3965, -79.3969, -79.3888, -79.3769, -79.3815, -79.3856, -79.3892,
-                -79.3894, -79.3851, -79.3922, -79.3889, -79.3949, -79.3896, -79.3872, -79.3805, -79.3829, -79.3777,
-                -79.3790, -79.3842, -79.3864, -79.3877, -79.3889, -79.3903, -79.3915, -79.3919, -79.3931, -79.3942,
-                -79.3950, -79.3964, -79.3969, -79.3981, -79.3995, -79.3997, -79.4009, -79.4012, -79.4023, -79.4031,
-                -79.4039, -79.4050, -79.4057, -79.4062, -79.4071, -79.4076, -79.4080, -79.4094, -79.4101, -79.4115,
-                -79.4121, -79.4125, -79.4130, -79.4135, -79.4142, -79.4148, -79.4152, -79.4157, -79.4162, -79.4166,
-                -79.4170, -79.4174, -79.4177, -79.4182, -79.4186, -79.4190, -79.4193, -79.4197, -79.4201, -79.4205
+                -79.3832, -79.3926, -79.4129, -79.3806, -79.4023, -79.3834, -79.3972, -79.3975, -79.4066,
+                -79.4337, -79.4273, -79.4677, -79.3903, -79.4088, -79.4266, -79.4344, -79.4522, -79.3488,
+                -79.2844, -79.2733, -79.3188, -79.3344, -79.3466, -79.3877, -79.3966, -79.4033, -79.3244,
+                -79.3033, -79.4788, -79.5733, -79.5122, -79.4677, -79.5322, -79.5488, -79.2922, -79.2833,
+                -79.2744, -79.2655, -79.2877, -79.2988, -79.2766, -79.2677, -79.2588, -79.2499, -79.2411,
+                -79.2322, -79.2233, -79.3455, -79.3366, -79.3277, -79.4466, -79.4377, -79.3188, -79.3466,
+                -79.3344, -79.4088, -79.3999, -79.3911, -79.4733, -79.4644, -79.4555, -79.4466, -79.4377,
+                -79.4977, -79.4888, -79.4799, -79.4711, -79.5733, -79.5644, -79.5555, -79.5466, -79.5377,
+                -79.5288, -79.5199, -79.5111, -79.3188, -79.3099, -79.3011, -79.2922, -79.2833, -79.2744,
+                -79.2655, -79.2566, -79.2477, -79.2388, -79.2299, -79.2211, -79.2122, -79.2033, -79.1944,
+                -79.1855, -79.1766, -79.1677, -79.1588, -79.1499, -79.1411, -79.1322, -79.1233, -79.1144,
+                -79.1055, -79.0966, -79.0877, -79.0788, -79.0699, -79.0611, -79.0522, -79.0433, -79.0344
         };
 
+        // Insert all locations into database
         for (int i = 0; i < addresses.length; i++) {
             values.put("ADDRESS", addresses[i]);
             values.put("LATITUDE", latitudes[i]);
             values.put("LONGITUDE", longitudes[i]);
-            db.insert(TABLE_NAME, null, values);
+            db.insert("LOCATIONS", null, values);
             values.clear();
         }
     }
@@ -152,6 +172,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @SuppressLint("Range")
     public List<Location> search(String searchTerm){
+        if (Objects.equals(searchTerm, "")) {
+            return getEntries();
+        }
         List<Location> locationList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
